@@ -1,0 +1,47 @@
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "Crear cuenta";
+}
+
+<div class="auth-wrap">
+    <h1>Crear cuenta</h1>
+    <p class="sub">Es rápido, prometido</p>
+
+    <form asp-action="Register" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="ReturnUrl" />
+        @Html.ValidationSummary(excludePropertyErrors: true, message: null, htmlAttributes: new { @class = "validation-summary-errors" })
+
+        <div class="form-field">
+            <label asp-for="FullName"></label>
+            <input asp-for="FullName" autocomplete="name" autofocus />
+            <span asp-validation-for="FullName" class="field-validation-error"></span>
+        </div>
+        <div class="form-field">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" type="email" autocomplete="email" />
+            <span asp-validation-for="Email" class="field-validation-error"></span>
+        </div>
+        <div class="form-field">
+            <label asp-for="Phone"></label>
+            <input asp-for="Phone" type="tel" autocomplete="tel" placeholder="+598 99 123 456" />
+            <span asp-validation-for="Phone" class="field-validation-error"></span>
+        </div>
+        <div class="form-field">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" type="password" autocomplete="new-password" />
+            <span asp-validation-for="Password" class="field-validation-error"></span>
+        </div>
+        <div class="form-field">
+            <label asp-for="ConfirmPassword"></label>
+            <input asp-for="ConfirmPassword" type="password" autocomplete="new-password" />
+            <span asp-validation-for="ConfirmPassword" class="field-validation-error"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Crear cuenta</button>
+    </form>
+
+    <div class="auth-footer">
+        ¿Ya tenés cuenta? <a asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl">Iniciar sesión</a>
+    </div>
+</div>

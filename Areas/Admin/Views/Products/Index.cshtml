@@ -1,0 +1,82 @@
+@model List<Jazmin.Models.Product>
+@{
+    ViewData["Title"] = "Productos";
+    var categories = ViewBag.Categories as List<Jazmin.Models.Category> ?? new();
+    var search = ViewBag.Search as string;
+    var catId = ViewBag.CategoryId as int?;
+}
+
+<div class="admin-head">
+    <h1>Productos</h1>
+    <a asp-action="Create" class="btn btn-primary">+ Nuevo producto</a>
+</div>
+
+<div class="adm-toolbar">
+    <form asp-action="Index" method="get">
+        <input type="text" name="search" value="@search" placeholder="Buscar por nombre…" />
+        <select name="categoryId">
+            <option value="">Todas las categorías</option>
+            @foreach (var c in categories)
+            {
+                <option value="@c.Id" selected="@(catId == c.Id)">@c.Name</option>
+            }
+        </select>
+        <button type="submit" class="btn btn-ghost btn-sm">Filtrar</button>
+        @if (!string.IsNullOrEmpty(search) || catId.HasValue)
+        {
+            <a asp-action="Index" class="btn btn-outline btn-sm">Limpiar</a>
+        }
+    </form>
+</div>
+
+<div class="adm-card" style="padding:0">
+    @if (!Model.Any())
+    {
+        <div style="padding:60px 20px; text-align:center; color:var(--text-muted)">
+            No hay productos. <a asp-action="Create">Crear el primero</a>.
+        </div>
+    }
+    else
+    {
+        <table class="adm-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th class="num">Precio</th>
+                    <th class="num">Stock</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model)
+                {
+                    <tr>
+                        <td style="width:60px"><img src="@p.PrimaryImageUrl" class="thumb" alt="@p.Name" /></td>
+                        <td>
+                            <div style="font-family:var(--serif); font-size:15px">@p.Name</div>
+                            <div style="font-size:11px; color:var(--text-muted)">@p.Slug</div>
+                        </td>
+                        <td>@p.Category?.Name</td>
+                        <td class="num">$ @p.Price.ToString("N0")</td>
+                        <td class="num" style="@(p.Stock == 0 ? "color:var(--danger);font-weight:600" : (p.Stock < 5 ? "color:var(--warning);font-weight:600" : ""))">@p.Stock</td>
+                        <td>
+                            @if (!p.IsActive) { <span class="status status-Cancelled">Oculto</span> }
+                            else if (p.IsFeatured) { <span class="status status-Paid">Destacado</span> }
+                            else { <span class="status status-Shipped">Activo</span> }
+                        </td>
+                        <td class="actions">
+                            <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-ghost btn-sm">Editar</a>
+                            <form asp-action="Delete" asp-route-id="@p.Id" method="post" style="display:inline" onsubmit="return confirm('¿Seguro querés borrar @p.Name?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-ghost btn-sm" style="color:var(--danger)">Borrar</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

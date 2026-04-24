@@ -1,0 +1,17 @@
+@{
+    ViewData["Title"] = "Ups!";
+    var code = ViewBag.Code as int?;
+}
+
+<section class="section container-narrow" style="text-align:center">
+    <div class="section-eyebrow">@(code?.ToString() ?? "Error")</div>
+    <h1 class="section-title">Algo salió mal</h1>
+    <p class="section-sub">
+        @if (code == 404) { <text>La página que buscás no existe o fue movida.</text> }
+        else if (code == 403) { <text>No tenés permiso para ver esta página.</text> }
+        else { <text>Algo no funcionó como esperábamos. Por favor, intentá de nuevo.</text> }
+    </p>
+    <div style="margin-top:24px">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Volver al inicio</a>
+    </div>
+</section>

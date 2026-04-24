@@ -1,0 +1,126 @@
+@model Jazmin.Models.Order
+@using Jazmin.Models
+@{
+    ViewData["Title"] = $"Pedido {Model.OrderNumber}";
+    var statuses = Enum.GetValues<OrderStatus>();
+}
+
+<div class="admin-head">
+    <h1>Pedido @Model.OrderNumber</h1>
+    <a asp-action="Index" class="btn btn-outline btn-sm">← Volver a pedidos</a>
+</div>
+
+<div class="adm-grid2">
+    <div>
+        <div class="adm-card">
+            <h3>Productos</h3>
+            <table class="adm-table">
+                <tbody>
+                    @foreach (var i in Model.Items)
+                    {
+                        <tr>
+                            <td style="width:60px">
+                                <img src="@(i.Product?.PrimaryImageUrl ?? "/img/placeholder.svg")" class="thumb" alt="@i.ProductName" />
+                            </td>
+                            <td>
+                                <div style="font-family:var(--serif); font-size:15px">@i.ProductName</div>
+                                <div style="font-size:11px; color:var(--text-muted)">
+                                    @(!string.IsNullOrEmpty(i.Size) ? $"Talla {i.Size} · " : "")$ @i.UnitPrice.ToString("N0") × @i.Quantity
+                                </div>
+                            </td>
+                            <td class="num" style="font-weight:600; color:var(--pink-700)">$ @i.LineTotal.ToString("N0")</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr><td colspan="2" style="text-align:right">Subtotal</td><td class="num">$ @Model.Subtotal.ToString("N0")</td></tr>
+                    <tr><td colspan="2" style="text-align:right">Envío</td><td class="num">$ @Model.ShippingCost.ToString("N0")</td></tr>
+                    <tr><td colspan="2" style="text-align:right; font-weight:600">Total</td><td class="num" style="font-weight:700; color:var(--pink-700); font-size:16px">$ @Model.Total.ToString("N0")</td></tr>
+                </tfoot>
+            </table>
+        </div>
+
+        @if (Model.Rating.HasValue)
+        {
+            <div class="adm-card">
+                <h3>Calificación de la clienta</h3>
+                <div style="font-size:22px; color:var(--warning)">
+                    @Html.Raw(string.Concat(Enumerable.Range(1, 5).Select(i => i <= Model.Rating!.Value ? "★" : "☆")))
+                </div>
+                @if (!string.IsNullOrWhiteSpace(Model.RatingComment))
+                {
+                    <p style="margin-top:6px; font-size:13px; line-height:1.6">“@Model.RatingComment”</p>
+                }
+            </div>
+        }
+    </div>
+
+    <div>
+        <div class="adm-card">
+            <h3>Cambiar estado</h3>
+            <form asp-action="ChangeStatus" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div style="display:flex; gap:8px">
+                    <select name="status" style="flex:1">
+                        @foreach (var s in statuses)
+                        {
+                            <option value="@s" selected="@(Model.Status == s)">@s</option>
+                        }
+                    </select>
+                    <button type="submit" class="btn btn-primary btn-sm">Actualizar</button>
+                </div>
+                <div style="margin-top:10px; font-size:12px; color:var(--text-muted)">
+                    Actual: <span class="status status-@Model.Status">@Model.Status</span>
+                </div>
+            </form>
+        </div>
+
+        <div class="adm-card">
+            <h3>Cliente</h3>
+            <div style="font-size:13px; line-height:1.8">
+                <strong>@Model.CustomerName</strong><br/>
+                <a href="mailto:@Model.CustomerEmail">@Model.CustomerEmail</a><br/>
+                <a href="https://wa.me/@(Model.CustomerPhone.Replace(" ", "").Replace("+", ""))" target="_blank" rel="noopener">📱 @Model.CustomerPhone</a>
+            </div>
+        </div>
+
+        <div class="adm-card">
+            <h3>Envío</h3>
+            <div style="font-size:13px; line-height:1.8">
+                <span class="status status-@Model.Status">@Model.ShippingZone</span>
+                @if (Model.ShippingZone != ShippingZone.Pickup)
+                {
+                    <text><br/>@Model.ShippingAddress<br/></text>
+                    <text>@Model.ShippingCity, @Model.ShippingDepartment</text>
+                    if (!string.IsNullOrEmpty(Model.ShippingPostalCode))
+                    {
+                        <br /><text>CP: @Model.ShippingPostalCode</text>
+                    }
+                }
+            </div>
+        </div>
+
+        <div class="adm-card">
+            <h3>Pago</h3>
+            <div style="font-size:13px; line-height:1.8">
+                <strong>@Model.PaymentMethod</strong><br/>
+                @if (!string.IsNullOrEmpty(Model.PaymentReference))
+                {
+                    <span style="font-size:11px; color:var(--text-muted)">Ref: @Model.PaymentReference</span>
+                }
+            </div>
+            @if (!string.IsNullOrEmpty(Model.Notes))
+            {
+                <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border); font-size:12px">
+                    <strong>Notas:</strong><br/>
+                    <em>“@Model.Notes”</em>
+                </div>
+            }
+        </div>
+
+        <div class="adm-card" style="font-size:12px; color:var(--text-muted)">
+            <div>Creado: @Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</div>
+            <div>Actualizado: @Model.UpdatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</div>
+        </div>
+    </div>
+</div>

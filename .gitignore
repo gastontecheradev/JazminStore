@@ -1,0 +1,50 @@
+## IDE / OS
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.DS_Store
+Thumbs.db
+
+## Build
+bin/
+obj/
+out/
+build/
+*.dll
+*.exe
+*.pdb
+
+## Publish
+publish/
+PublishProfiles/
+
+## EF / DB
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+
+## Secrets & environment
+appsettings.Development.json
+appsettings.Production.json
+appsettings.Local.json
+*.env
+.env
+.env.*
+secrets.json
+
+## User content
+wwwroot/uploads/*
+!wwwroot/uploads/.gitkeep
+
+## Logs
+*.log
+logs/
+
+## NuGet
+*.nupkg
+packages/

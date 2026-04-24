@@ -1,0 +1,112 @@
+@model AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Panel admin";
+    Layout = "_Layout";
+    var maxRevenue = Model.RevenueByMonth.Any() ? Math.Max(Model.RevenueByMonth.Max(r => r.revenue), 1m) : 1m;
+}
+
+<div class="admin-head">
+    <h1>Resumen</h1>
+    <div style="color:var(--text-muted);font-size:12px">@DateTime.Now.ToString("dddd dd 'de' MMMM 'de' yyyy")</div>
+</div>
+
+<div class="kpis">
+    <div class="kpi">
+        <div class="kpi-label">Ventas totales</div>
+        <div class="kpi-value">$ @Model.RevenueTotal.ToString("N0")</div>
+        <div class="kpi-sub">Este mes: $ @Model.RevenueMonth.ToString("N0")</div>
+    </div>
+    <div class="kpi">
+        <div class="kpi-label">Pedidos</div>
+        <div class="kpi-value">@Model.OrdersTotal</div>
+        <div class="kpi-sub">@Model.OrdersPending pendiente@(Model.OrdersPending == 1 ? "" : "s") · @Model.OrdersMonth este mes</div>
+    </div>
+    <div class="kpi">
+        <div class="kpi-label">Productos activos</div>
+        <div class="kpi-value">@Model.ProductsActive</div>
+        <div class="kpi-sub">@Model.ProductsOutOfStock sin stock</div>
+    </div>
+    <div class="kpi">
+        <div class="kpi-label">Clientas</div>
+        <div class="kpi-value">@Model.CustomersCount</div>
+        <div class="kpi-sub">@Model.ReviewsCount reseñ@(Model.ReviewsCount == 1 ? "a" : "as") · @Model.AverageRating.ToString("0.0") ★ promedio</div>
+    </div>
+</div>
+
+<div class="adm-grid2">
+    <div class="adm-card">
+        <h3>Facturación — últimos 6 meses</h3>
+        <div class="bars">
+            @foreach (var r in Model.RevenueByMonth)
+            {
+                var pct = (double)(r.revenue / maxRevenue) * 100;
+                <div class="bar-col">
+                    <div class="bar-value">$ @r.revenue.ToString("N0")</div>
+                    <div class="bar" style="height:@(pct.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture))%"></div>
+                    <div class="bar-label">@r.month</div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="adm-card">
+        <h3>Más vendidos</h3>
+        @if (!Model.TopProducts.Any())
+        {
+            <p style="color:var(--text-muted); font-size:13px">Todavía no hay ventas registradas.</p>
+        }
+        else
+        {
+            <table class="adm-table">
+                <tbody>
+                    @foreach (var (product, sold) in Model.TopProducts)
+                    {
+                        <tr>
+                            <td style="width:60px">
+                                <img src="@product.PrimaryImageUrl" class="thumb" alt="@product.Name" />
+                            </td>
+                            <td>
+                                <div style="font-family:var(--serif); font-size:15px; color:var(--text)">@product.Name</div>
+                                <div style="font-size:11px; color:var(--text-muted)">$ @product.Price.ToString("N0")</div>
+                            </td>
+                            <td class="num" style="text-align:right; font-weight:600; color:var(--pink-700)">@sold vendid@(sold == 1 ? "o" : "os")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<div class="adm-card">
+    <h3 style="display:flex; justify-content:space-between; align-items:center">
+        Pedidos recientes
+        <a asp-action="Index" asp-controller="Orders" class="btn btn-outline btn-sm">Ver todos</a>
+    </h3>
+    @if (!Model.RecentOrders.Any())
+    {
+        <p style="color:var(--text-muted); font-size:13px">Todavía no hay pedidos.</p>
+    }
+    else
+    {
+        <table class="adm-table">
+            <thead>
+                <tr><th>Número</th><th>Cliente</th><th>Fecha</th><th>Items</th><th class="num">Total</th><th>Estado</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (var o in Model.RecentOrders)
+                {
+                    <tr>
+                        <td style="font-family:var(--serif);color:var(--pink-700);font-size:15px">@o.OrderNumber</td>
+                        <td>@o.CustomerName</td>
+                        <td>@o.CreatedAt.ToLocalTime().ToString("dd/MM HH:mm")</td>
+                        <td class="num">@o.Items.Count</td>
+                        <td class="num" style="font-weight:600">$ @o.Total.ToString("N0")</td>
+                        <td><span class="status status-@o.Status">@o.Status</span></td>
+                        <td class="actions"><a asp-controller="Orders" asp-action="Detail" asp-route-id="@o.Id" class="btn btn-ghost btn-sm">Ver</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

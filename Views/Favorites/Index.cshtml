@@ -1,0 +1,34 @@
+@model List<Jazmin.Models.Product>
+@{
+    ViewData["Title"] = "Favoritos";
+    var ratings = ViewBag.Ratings as IDictionary<int, (double avg, int count)>;
+    var favs = Model.Select(p => p.Id).ToHashSet();
+}
+
+<section class="section">
+    <div class="section-head">
+        <div class="section-eyebrow">Tu wishlist</div>
+        <h1 class="section-title">Favoritos</h1>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty" style="max-width:600px;margin:0 auto;background:white;border:1px solid var(--border);border-radius:var(--r);padding:60px 20px">
+            <h3>Todavía no guardaste favoritos</h3>
+            <p>Tocá el corazón ♥ en los productos que te gusten y los vas a encontrar acá.</p>
+            <a asp-controller="Catalog" asp-action="Index" class="btn btn-primary" style="margin-top:18px">Ver catálogo</a>
+        </div>
+    }
+    else
+    {
+        <div class="grid-products" style="max-width:1280px;margin:0 auto">
+            @foreach (var p in Model)
+            {
+                var vdFav = new ViewDataDictionary(ViewData);
+                vdFav["Ratings"] = ratings;
+                vdFav["Favorites"] = favs;
+                @await Html.PartialAsync("_ProductCard", p, vdFav)
+            }
+        </div>
+    }
+</section>

@@ -1,0 +1,75 @@
+@model List<Jazmin.Models.Order>
+@{
+    ViewData["Title"] = "Pedidos";
+    var currentStatus = ViewBag.Status as Jazmin.Models.OrderStatus?;
+    var search = ViewBag.Search as string;
+    var statuses = Enum.GetValues<Jazmin.Models.OrderStatus>();
+}
+
+<div class="admin-head">
+    <h1>Pedidos</h1>
+</div>
+
+<div class="adm-toolbar">
+    <form asp-action="Index" method="get">
+        <input type="text" name="search" value="@search" placeholder="Buscar por número, nombre o email…" />
+        <select name="status">
+            <option value="">Todos los estados</option>
+            @foreach (var s in statuses)
+            {
+                <option value="@s" selected="@(currentStatus == s)">@s</option>
+            }
+        </select>
+        <button type="submit" class="btn btn-ghost btn-sm">Filtrar</button>
+        @if (!string.IsNullOrEmpty(search) || currentStatus.HasValue)
+        {
+            <a asp-action="Index" class="btn btn-outline btn-sm">Limpiar</a>
+        }
+    </form>
+</div>
+
+<div class="adm-card" style="padding:0">
+    @if (!Model.Any())
+    {
+        <div style="padding:60px 20px; text-align:center; color:var(--text-muted)">
+            No hay pedidos con estos filtros.
+        </div>
+    }
+    else
+    {
+        <table class="adm-table">
+            <thead>
+                <tr>
+                    <th>Número</th>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                    <th>Zona</th>
+                    <th>Pago</th>
+                    <th class="num">Items</th>
+                    <th class="num">Total</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var o in Model)
+                {
+                    <tr>
+                        <td style="font-family:var(--serif);color:var(--pink-700);font-size:15px">@o.OrderNumber</td>
+                        <td>
+                            <div>@o.CustomerName</div>
+                            <div style="font-size:11px; color:var(--text-muted)">@o.CustomerEmail</div>
+                        </td>
+                        <td>@o.CreatedAt.ToLocalTime().ToString("dd/MM HH:mm")</td>
+                        <td style="font-size:12px">@o.ShippingZone</td>
+                        <td style="font-size:12px">@o.PaymentMethod</td>
+                        <td class="num">@o.Items.Count</td>
+                        <td class="num" style="font-weight:600">$ @o.Total.ToString("N0")</td>
+                        <td><span class="status status-@o.Status">@o.Status</span></td>
+                        <td class="actions"><a asp-action="Detail" asp-route-id="@o.Id" class="btn btn-ghost btn-sm">Ver</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

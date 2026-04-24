@@ -1,0 +1,19 @@
+@model Jazmin.Models.Order
+@{
+    ViewData["Title"] = "Pago no completado";
+}
+
+<section class="section container-narrow" style="text-align:center">
+    <div style="font-size:60px; color:var(--danger); margin-bottom:10px">✕</div>
+    <div class="section-eyebrow">Hubo un problema</div>
+    <h1 class="section-title">No pudimos confirmar el pago</h1>
+    <p class="section-sub">
+        Tu pedido <strong>@Model.OrderNumber</strong> quedó pendiente. Esto suele pasar si el pago fue rechazado o cancelado.
+        Podés intentar nuevamente o contactarnos por WhatsApp y coordinamos otra forma de pago.
+    </p>
+
+    <div style="margin-top:26px">
+        <a asp-controller="Checkout" asp-action="Index" class="btn btn-primary">Reintentar</a>
+        <a asp-action="Detail" asp-route-id="@Model.Id" class="btn btn-outline">Ver pedido</a>
+    </div>
+</section>

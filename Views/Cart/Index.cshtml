@@ -1,0 +1,99 @@
+@model CartViewModel
+@{
+    ViewData["Title"] = "Carrito";
+}
+
+<div class="cart-wrap">
+    <div>
+        <h1 class="cart-title">Tu carrito</h1>
+
+        @if (!Model.Lines.Any())
+        {
+            <div class="empty" style="background:white;border:1px solid var(--border);border-radius:var(--r);padding:60px 20px">
+                <h3>Tu carrito está vacío</h3>
+                <p>Pasá por el catálogo y agregá algo lindo ✨</p>
+                <a asp-controller="Catalog" asp-action="Index" class="btn btn-primary" style="margin-top:18px">Ver catálogo</a>
+            </div>
+        }
+        else
+        {
+            <div class="cart-lines">
+                @foreach (var l in Model.Lines)
+                {
+                    <div class="cart-line">
+                        <a asp-controller="Product" asp-action="Detail" asp-route-slug="@l.ProductSlug" class="cart-line-img">
+                            <img src="@l.ImageUrl" alt="@l.ProductName" />
+                        </a>
+                        <div class="cart-line-info">
+                            <div class="cart-line-title"><a asp-controller="Product" asp-action="Detail" asp-route-slug="@l.ProductSlug" style="color:inherit">@l.ProductName</a></div>
+                            @if (!string.IsNullOrEmpty(l.Size))
+                            {
+                                <div class="cart-line-meta">Talla: @l.Size</div>
+                            }
+                            <div class="cart-line-meta">$ @l.UnitPrice.ToString("N0") c/u</div>
+
+                            <form asp-controller="Cart" asp-action="UpdateQty" method="post" style="display:inline-flex; margin-top:6px">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="productId" value="@l.ProductId" />
+                                <input type="hidden" name="size" value="@l.Size" />
+                                <span class="cart-line-qty">
+                                    <button type="submit" name="qty" value="@(l.Quantity - 1)" aria-label="Menos">−</button>
+                                    <span>@l.Quantity</span>
+                                    <button type="submit" name="qty" value="@(l.Quantity + 1)" @(l.Quantity >= l.Stock ? "disabled" : "") aria-label="Más">+</button>
+                                </span>
+                            </form>
+                        </div>
+                        <div class="cart-line-right">
+                            <div class="cart-line-total">$ @l.LineTotal.ToString("N0")</div>
+                            <form asp-controller="Cart" asp-action="Remove" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="productId" value="@l.ProductId" />
+                                <input type="hidden" name="size" value="@l.Size" />
+                                <button type="submit" class="cart-line-remove">Quitar</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div style="margin-top:16px; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap">
+                <a asp-controller="Catalog" asp-action="Index" class="btn btn-outline btn-sm">← Seguir comprando</a>
+                <form asp-controller="Cart" asp-action="Clear" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-ghost btn-sm">Vaciar carrito</button>
+                </form>
+            </div>
+        }
+    </div>
+
+    @if (Model.Lines.Any())
+    {
+        <aside class="summary">
+            <h3>Resumen</h3>
+            <div class="summary-row">
+                <span>Productos (@Model.ItemCount)</span>
+                <span>$ @Model.Subtotal.ToString("N0")</span>
+            </div>
+            <div class="summary-row" style="color:var(--text-muted); font-size:12px">
+                <span>Envío</span>
+                <span>Se calcula en el checkout</span>
+            </div>
+            <div class="summary-row total">
+                <span>Subtotal</span>
+                <span>$ @Model.Subtotal.ToString("N0")</span>
+            </div>
+
+            @if (SignInMgr.IsSignedIn(User))
+            {
+                <a asp-controller="Checkout" asp-action="Index" class="btn btn-primary btn-block" style="margin-top:14px">Finalizar compra</a>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Url.Action("Index", "Checkout")" class="btn btn-primary btn-block" style="margin-top:14px">Iniciar sesión para comprar</a>
+                <p style="text-align:center; margin-top:10px; font-size:12px; color:var(--text-muted)">
+                    ¿No tenés cuenta? <a asp-controller="Account" asp-action="Register" asp-route-returnUrl="@Url.Action("Index", "Checkout")">Creá una en 1 minuto</a>
+                </p>
+            }
+        </aside>
+    }
+</div>

@@ -1,0 +1,142 @@
+@model CatalogViewModel
+@{
+    ViewData["Title"] = "Catálogo";
+    var currentQs = new Dictionary<string, string?>
+    {
+        { "search", Model.Search },
+        { "sort", Model.Sort },
+        { "minPrice", Model.MinPrice?.ToString() },
+        { "maxPrice", Model.MaxPrice?.ToString() }
+    };
+    string PageUrl(int p, int? catId) {
+        var qs = new Dictionary<string, string?>(currentQs) { ["page"] = p.ToString() };
+        if (catId.HasValue) qs["categoryId"] = catId.Value.ToString();
+        return Url.Action("Index", "Catalog", qs) ?? "#";
+    }
+}
+
+<div class="catalog">
+    <aside class="filter-side">
+        <div class="filter-title">Filtros</div>
+
+        <div class="filter-group">
+            <div class="filter-label">Categorías</div>
+            <ul>
+                <li>
+                    <a asp-action="Index" asp-route-categoryId=""
+                       asp-route-search="@Model.Search" asp-route-sort="@Model.Sort"
+                       class="@(Model.SelectedCategoryId == null ? "active" : "")">
+                        Todas <small>@Model.CategoryCounts.Values.Sum()</small>
+                    </a>
+                </li>
+                @foreach (var c in Model.Categories)
+                {
+                    var count = Model.CategoryCounts.ContainsKey(c.Id) ? Model.CategoryCounts[c.Id] : 0;
+                    <li>
+                        <a asp-action="Index" asp-route-categoryId="@c.Id"
+                           asp-route-search="@Model.Search" asp-route-sort="@Model.Sort"
+                           class="@(Model.SelectedCategoryId == c.Id ? "active" : "")">
+                            @c.Name <small>@count</small>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <div class="filter-group">
+            <div class="filter-label">Precio (UYU)</div>
+            <form asp-action="Index" method="get">
+                <input type="hidden" name="categoryId" value="@Model.SelectedCategoryId" />
+                <input type="hidden" name="search" value="@Model.Search" />
+                <input type="hidden" name="sort" value="@Model.Sort" />
+                <div class="price-inputs">
+                    <input type="number" name="minPrice" value="@Model.MinPrice" placeholder="Min" min="0" />
+                    <input type="number" name="maxPrice" value="@Model.MaxPrice" placeholder="Max" min="0" />
+                </div>
+                <button type="submit" class="btn btn-ghost btn-sm btn-block" style="margin-top:10px">Aplicar</button>
+            </form>
+        </div>
+
+        @if (Model.MinPrice.HasValue || Model.MaxPrice.HasValue || !string.IsNullOrEmpty(Model.Search) || Model.SelectedCategoryId.HasValue)
+        {
+            <a asp-action="Index" class="btn btn-outline btn-sm btn-block" style="margin-top:10px">Limpiar filtros</a>
+        }
+    </aside>
+
+    <div class="catalog-main">
+        <div class="catalog-toolbar">
+            <div>
+                <h1 style="font-family:var(--serif); color:var(--pink-700); font-style:italic; font-size:32px">
+                    @if (Model.SelectedCategoryId.HasValue)
+                    {
+                        var cat = Model.Categories.FirstOrDefault(c => c.Id == Model.SelectedCategoryId.Value);
+                        @(cat?.Name ?? "Catálogo")
+                    }
+                    else if (!string.IsNullOrEmpty(Model.Search))
+                    {
+                        <text>Búsqueda: "@Model.Search"</text>
+                    }
+                    else
+                    {
+                        <text>Catálogo</text>
+                    }
+                </h1>
+                <div class="catalog-count">@Model.TotalCount prendas encontradas</div>
+            </div>
+            <div class="catalog-sort">
+                <form asp-action="Index" method="get" id="sortForm">
+                    <input type="hidden" name="categoryId" value="@Model.SelectedCategoryId" />
+                    <input type="hidden" name="search" value="@Model.Search" />
+                    <input type="hidden" name="minPrice" value="@Model.MinPrice" />
+                    <input type="hidden" name="maxPrice" value="@Model.MaxPrice" />
+                    <select name="sort" onchange="document.getElementById('sortForm').submit()">
+                        <option value="new" selected="@(Model.Sort == "new")">Más nuevos primero</option>
+                        <option value="price_asc" selected="@(Model.Sort == "price_asc")">Precio: menor a mayor</option>
+                        <option value="price_desc" selected="@(Model.Sort == "price_desc")">Precio: mayor a menor</option>
+                        <option value="name" selected="@(Model.Sort == "name")">Nombre A–Z</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+
+        @if (Model.Products.Any())
+        {
+            <div class="grid-products">
+                @foreach (var p in Model.Products)
+                {
+                    var vdCat = new ViewDataDictionary(ViewData);
+                    vdCat["Ratings"] = Model.Ratings;
+                    vdCat["Favorites"] = Model.FavoriteIds;
+                    @await Html.PartialAsync("_ProductCard", p, vdCat)
+                }
+            </div>
+
+            @if (Model.TotalPages > 1)
+            {
+                <div class="pagination">
+                    <a href="@PageUrl(Math.Max(1, Model.Page - 1), Model.SelectedCategoryId)" class="@(Model.Page == 1 ? "disabled" : "")">← Anterior</a>
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        if (i == Model.Page)
+                        {
+                            <span class="current">@i</span>
+                        }
+                        else
+                        {
+                            <a href="@PageUrl(i, Model.SelectedCategoryId)">@i</a>
+                        }
+                    }
+                    <a href="@PageUrl(Math.Min(Model.TotalPages, Model.Page + 1), Model.SelectedCategoryId)" class="@(Model.Page == Model.TotalPages ? "disabled" : "")">Siguiente →</a>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty">
+                <h3>Sin resultados</h3>
+                <p>No encontramos prendas que coincidan. Probá cambiando los filtros.</p>
+                <a asp-action="Index" class="btn btn-outline" style="margin-top:18px">Ver todo</a>
+            </div>
+        }
+    </div>
+</div>

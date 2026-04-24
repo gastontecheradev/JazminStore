@@ -1,0 +1,57 @@
+@model List<Jazmin.Models.Product>
+@{
+    ViewData["Title"] = null; // use default
+    var ratings = ViewBag.Ratings as IDictionary<int, (double avg, int count)>;
+    var categories = ViewBag.Categories as List<Jazmin.Models.Category> ?? new();
+    var favs = ViewBag.Favorites as HashSet<int> ?? new HashSet<int>();
+    var siteName = Config["Site:Name"] ?? "JAZMÍN";
+    var tagline = Config["Site:Tagline"] ?? "Ropa hecha con amor";
+}
+
+<section class="hero">
+    <div class="hero-eyebrow">Hecho con amor en Uruguay</div>
+    <h1 class="hero-title">JAZMÍN</h1>
+    <p class="hero-sub">Prendas únicas, pensadas con cariño para acompañarte en cada momento. Cada pieza es un pequeño tesoro, hecha a mano con materiales de calidad.</p>
+    <a asp-controller="Catalog" asp-action="Index" class="btn btn-primary btn-lg">Ver colección</a>
+</section>
+
+@if (categories.Any())
+{
+    <section class="section">
+        <div class="section-head">
+            <div class="section-eyebrow">Explorá</div>
+            <h2 class="section-title">Categorías</h2>
+        </div>
+        <div class="cats-grid">
+            @foreach (var c in categories)
+            {
+                <a asp-controller="Catalog" asp-action="Index" asp-route-categoryId="@c.Id" class="cat-card">
+                    <div class="cat-card-title">@c.Name</div>
+                </a>
+            }
+        </div>
+    </section>
+}
+
+@if (Model.Any())
+{
+    <section class="section" style="padding-top:40px">
+        <div class="section-head">
+            <div class="section-eyebrow">Lo más elegido</div>
+            <h2 class="section-title">Destacados</h2>
+            <p class="section-sub">Las piezas que más están enamorando</p>
+        </div>
+        <div class="grid-products">
+            @foreach (var p in Model)
+            {
+                var vd = new ViewDataDictionary(ViewData);
+                vd["Ratings"] = ratings;
+                vd["Favorites"] = favs;
+                @await Html.PartialAsync("_ProductCard", p, vd)
+            }
+        </div>
+        <div style="text-align:center;margin-top:36px">
+            <a asp-controller="Catalog" asp-action="Index" class="btn btn-outline">Ver todo el catálogo</a>
+        </div>
+    </section>
+}

@@ -1,0 +1,10 @@
+@using Jazmin
+@using Jazmin.Models
+@using Jazmin.Models.ViewModels
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.Rendering
+@inject SignInManager<ApplicationUser> SignInMgr
+@inject UserManager<ApplicationUser> UserMgr
+@inject IConfiguration Config
+@inject Jazmin.Services.ICartService CartSvc
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers

@@ -1,0 +1,60 @@
+@model Jazmin.Models.Product
+@{
+    var ratings = ViewData["Ratings"] as IDictionary<int, (double avg, int count)>;
+    var favs = ViewData["Favorites"] as HashSet<int> ?? new HashSet<int>();
+    (double avg, int count) rating = (0, 0);
+    if (ratings != null && ratings.ContainsKey(Model.Id)) rating = ratings[Model.Id];
+    var isFav = favs.Contains(Model.Id);
+    var isLoggedIn = SignInMgr.IsSignedIn(User);
+    var hasDiscount = Model.ComparePrice.HasValue && Model.ComparePrice.Value > Model.Price;
+    var isOut = Model.Stock == 0;
+}
+<article class="card">
+    <div class="card-img-wrap">
+        <a asp-controller="Product" asp-action="Detail" asp-route-slug="@Model.Slug" aria-label="@Model.Name">
+            <img src="@Model.PrimaryImageUrl" alt="@(Model.Images.FirstOrDefault()?.Alt ?? Model.Name)" loading="lazy" />
+        </a>
+        <div class="card-tags">
+            @if (Model.IsNew) { <span class="tag tag-new">Nuevo</span> }
+            @if (hasDiscount) { <span class="tag tag-sale">-@(((int)Math.Round((1 - Model.Price / Model.ComparePrice!.Value) * 100)))%</span> }
+            @if (isOut) { <span class="tag tag-out">Sin stock</span> }
+        </div>
+        <div class="card-overlay">
+            @if (isLoggedIn)
+            {
+                <form asp-controller="Favorites" asp-action="Toggle" method="post" class="js-fav-toggle" style="margin:0;padding:0">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="productId" value="@Model.Id" />
+                    <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                    <button type="submit" class="fav-btn @(isFav ? "is-fav" : "")" aria-label="Favorito" title="@(isFav ? "Quitar de favoritos" : "Agregar a favoritos")">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="@(isFav ? "currentColor" : "none")" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    </button>
+                </form>
+            }
+            else
+            {
+                <a href="@Url.Action("Login", "Account", new { returnUrl = Context.Request.Path })" class="fav-btn" aria-label="Ingresá para guardar favoritos" title="Ingresá para guardar favoritos">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </a>
+            }
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="card-cat">@Model.Category?.Name</div>
+        <h3 class="card-title"><a asp-controller="Product" asp-action="Detail" asp-route-slug="@Model.Slug">@Model.Name</a></h3>
+        <div class="card-price-row">
+            <span class="card-price">$ @Model.Price.ToString("N0")</span>
+            @if (hasDiscount)
+            {
+                <span class="card-compare">$ @Model.ComparePrice!.Value.ToString("N0")</span>
+            }
+        </div>
+        @if (rating.count > 0)
+        {
+            <div class="card-rating">
+                <span class="stars">@Html.Raw(string.Concat(Enumerable.Range(1, 5).Select(i => i <= Math.Round(rating.avg) ? "★" : "☆")))</span>
+                <span>(@rating.count)</span>
+            </div>
+        }
+    </div>
+</article>

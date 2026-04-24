@@ -1,0 +1,19 @@
+@model Jazmin.Models.Order
+@{
+    ViewData["Title"] = "Pago pendiente";
+}
+
+<section class="section container-narrow" style="text-align:center">
+    <div style="font-size:60px; color:var(--warning); margin-bottom:10px">⏳</div>
+    <div class="section-eyebrow">Esperando confirmación</div>
+    <h1 class="section-title">Tu pago está procesándose</h1>
+    <p class="section-sub">
+        Recibimos tu pedido <strong>@Model.OrderNumber</strong>, pero el pago todavía no fue confirmado por Mercado Pago.
+        Te vamos a avisar por email apenas se confirme.
+    </p>
+
+    <div style="margin-top:26px">
+        <a asp-action="Detail" asp-route-id="@Model.Id" class="btn btn-primary">Ver detalle del pedido</a>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline">Volver al inicio</a>
+    </div>
+</section>

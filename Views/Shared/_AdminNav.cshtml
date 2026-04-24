@@ -1,0 +1,33 @@
+@{
+    var siteName = Config["Site:Name"] ?? "JAZMÍN";
+    var currentController = ViewContext.RouteData.Values["controller"] as string;
+    string Cls(string c) => string.Equals(currentController, c, StringComparison.OrdinalIgnoreCase) ? "active" : "";
+}
+<aside class="admin-side">
+    <a href="@Url.Action("Index", "Dashboard", new { area = "Admin" })" class="admin-logo">@siteName</a>
+
+    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="@Cls("Dashboard")">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Resumen
+    </a>
+    <a asp-area="Admin" asp-controller="Orders" asp-action="Index" class="@Cls("Orders")">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Pedidos
+    </a>
+    <a asp-area="Admin" asp-controller="Products" asp-action="Index" class="@Cls("Products")">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+        Productos
+    </a>
+    <a asp-area="Admin" asp-controller="Categories" asp-action="Index" class="@Cls("Categories")">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        Categorías
+    </a>
+
+    <div class="adm-bottom">
+        <a asp-controller="Home" asp-action="Index" asp-route-area="">← Ir a la tienda</a>
+        <form asp-controller="Account" asp-action="Logout" asp-route-area="" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit">Cerrar sesión</button>
+        </form>
+    </div>
+</aside>

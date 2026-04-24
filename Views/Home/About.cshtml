@@ -1,0 +1,34 @@
+@{
+    ViewData["Title"] = "Sobre mí";
+    var siteName = Config["Site:Name"] ?? "JAZMÍN";
+    var whatsApp = Config["Site:WhatsAppNumber"] ?? "";
+    var whatsAppMsg = Config["Site:WhatsAppMessage"] ?? "Hola!";
+}
+
+<section class="section container-narrow" style="text-align:center">
+    <div class="section-eyebrow">La historia</div>
+    <h1 class="section-title">Sobre @siteName</h1>
+
+    <div style="text-align:left; margin-top:40px; background:white; border:1px solid var(--border); border-radius:var(--r); padding:40px;">
+        <p style="margin-bottom:16px; line-height:1.8; color:var(--text);">
+            @siteName nació del amor por las prendas que cuentan una historia. Cada pieza se confecciona a mano en Uruguay,
+            con atención a cada puntada, a cada detalle.
+        </p>
+        <p style="margin-bottom:16px; line-height:1.8; color:var(--text);">
+            Creemos en la ropa que dura, en los materiales nobles y en las piezas únicas que se integran a tu guardarropa
+            para acompañarte por mucho tiempo.
+        </p>
+        <p style="line-height:1.8; color:var(--text);">
+            Hacemos envíos a todo Uruguay: <strong>Montevideo</strong> e <strong>Interior</strong>.
+            Si tenés dudas sobre talles, materiales o necesitás algo a medida, escribinos por WhatsApp o Instagram.
+        </p>
+    </div>
+
+    <div style="margin-top:36px">
+        @if (!string.IsNullOrEmpty(whatsApp))
+        {
+            <a href="https://wa.me/@whatsApp?text=@Uri.EscapeDataString(whatsAppMsg)" target="_blank" rel="noopener" class="btn btn-primary">Hablar por WhatsApp</a>
+        }
+        <a asp-controller="Home" asp-action="Contact" class="btn btn-outline">Más formas de contacto</a>
+    </div>
+</section>

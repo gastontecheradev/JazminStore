@@ -1,0 +1,71 @@
+@model ProductEditViewModel
+@{
+    ViewData["Title"] = $"Editar: {Model.Name}";
+}
+
+<div class="admin-head">
+    <h1>Editar producto</h1>
+    <a asp-action="Index" class="btn btn-outline btn-sm">← Volver</a>
+</div>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data" class="adm-card">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+
+    @await Html.PartialAsync("_FormFields", Model)
+
+    <div class="form-field" style="margin-top:22px">
+        <label>Imágenes existentes</label>
+        @if (!Model.ExistingImages.Any())
+        {
+            <div style="color:var(--text-muted); font-size:13px">Este producto no tiene imágenes todavía.</div>
+        }
+        else
+        {
+            <div class="adm-images">
+                @foreach (var img in Model.ExistingImages)
+                {
+                    <div class="adm-image @(img.IsPrimary ? "primary" : "")">
+                        <img src="@img.Url" alt="Imagen" />
+                        @if (img.IsPrimary)
+                        {
+                            <span class="badge-primary">PRINCIPAL</span>
+                        }
+                        <div class="img-actions">
+                            @if (!img.IsPrimary)
+                            {
+                                <form asp-action="SetPrimary" method="post" style="display:inline;flex:1">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="imageId" value="@img.Id" />
+                                    <input type="hidden" name="productId" value="@Model.Id" />
+                                    <button type="submit" title="Hacer principal">★</button>
+                                </form>
+                            }
+                            <form asp-action="DeleteImage" method="post" style="display:inline;flex:1" onsubmit="return confirm('¿Borrar esta imagen?');">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="imageId" value="@img.Id" />
+                                <input type="hidden" name="productId" value="@Model.Id" />
+                                <button type="submit" class="delete" title="Borrar">✕</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <div class="form-field" style="margin-top:18px">
+        <label asp-for="NewImages">Agregar nuevas imágenes</label>
+        <input type="file" name="NewImages" multiple accept="image/*" />
+        <div style="font-size:11px; color:var(--text-muted); margin-top:4px">Máx 5MB c/u. jpg, png, webp, gif.</div>
+    </div>
+
+    <div style="margin-top:20px; display:flex; gap:10px">
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        <a asp-action="Index" class="btn btn-ghost">Cancelar</a>
+        <form asp-action="Delete" asp-route-id="@Model.Id" method="post" style="margin-left:auto" onsubmit="return confirm('¿Seguro querés borrar este producto?');">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-ghost" style="color:var(--danger)">Borrar producto</button>
+        </form>
+    </div>
+</form>

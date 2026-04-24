@@ -1,0 +1,39 @@
+@model List<Jazmin.Models.Order>
+@{
+    ViewData["Title"] = "Mis pedidos";
+}
+
+<section class="orders-list">
+    <h2>Mis pedidos</h2>
+
+    @if (TempData["OrderMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["OrderMessage"]</div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="empty" style="background:white;border:1px solid var(--border);border-radius:var(--r);padding:60px 20px;text-align:center">
+            <h3>Todavía no hiciste pedidos</h3>
+            <p>Cuando compres, vas a ver acá el historial.</p>
+            <a asp-controller="Catalog" asp-action="Index" class="btn btn-primary" style="margin-top:18px">Ver catálogo</a>
+        </div>
+    }
+    else
+    {
+        @foreach (var o in Model)
+        {
+            <div class="order-card">
+                <div>
+                    <div class="order-num">@o.OrderNumber</div>
+                    <div class="order-meta">@o.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm") · <span class="status status-@o.Status">@o.Status</span></div>
+                    <div class="order-items">@o.Items.Count prenda@(o.Items.Count == 1 ? "" : "s") — @string.Join(", ", o.Items.Take(3).Select(i => i.ProductName))@(o.Items.Count > 3 ? "…" : "")</div>
+                </div>
+                <div>
+                    <div class="order-total">$ @o.Total.ToString("N0")</div>
+                    <a asp-action="Detail" asp-route-id="@o.Id" class="btn btn-outline btn-sm" style="margin-top:8px">Ver detalle</a>
+                </div>
+            </div>
+        }
+    }
+</section>

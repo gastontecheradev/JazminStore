@@ -1,0 +1,75 @@
+@model ProductEditViewModel
+
+<div class="adm-form">
+    @Html.ValidationSummary(excludePropertyErrors: true, message: null, htmlAttributes: new { @class = "validation-summary-errors" })
+
+    <div class="form-field">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" />
+        <span asp-validation-for="Name" class="field-validation-error"></span>
+    </div>
+
+    <div class="form-field">
+        <label asp-for="ShortDescription"></label>
+        <input asp-for="ShortDescription" placeholder="Resumen de 1-2 líneas, se muestra arriba del detalle" />
+    </div>
+
+    <div class="form-field">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" rows="5"></textarea>
+    </div>
+
+    <div class="row3">
+        <div class="form-field">
+            <label asp-for="Price"></label>
+            <input asp-for="Price" type="number" step="1" min="0" />
+            <span asp-validation-for="Price" class="field-validation-error"></span>
+        </div>
+        <div class="form-field">
+            <label asp-for="ComparePrice"></label>
+            <input asp-for="ComparePrice" type="number" step="1" min="0" placeholder="Opcional" />
+        </div>
+        <div class="form-field">
+            <label asp-for="Stock"></label>
+            <input asp-for="Stock" type="number" step="1" min="0" />
+        </div>
+    </div>
+
+    <div class="row2">
+        <div class="form-field">
+            <label asp-for="CategoryId"></label>
+            <select asp-for="CategoryId">
+                <option value="">— Seleccionar —</option>
+                @foreach (var c in Model.Categories)
+                {
+                    <option value="@c.Id" selected="@(Model.CategoryId == c.Id)">@c.Name</option>
+                }
+            </select>
+            <span asp-validation-for="CategoryId" class="field-validation-error"></span>
+        </div>
+        <div class="form-field">
+            <label asp-for="SizesCsv"></label>
+            <input asp-for="SizesCsv" placeholder="XS,S,M,L,XL o Único" />
+        </div>
+    </div>
+
+    <div class="form-field">
+        <label asp-for="ColorsCsv"></label>
+        <input asp-for="ColorsCsv" placeholder="Ej: Negro, Beige, Verde (opcional)" />
+    </div>
+
+    <div style="display:flex; gap:18px; flex-wrap:wrap">
+        <label style="display:flex; align-items:center; gap:6px; font-size:13px">
+            <input asp-for="IsActive" type="checkbox" />
+            <span>Activo (visible en la tienda)</span>
+        </label>
+        <label style="display:flex; align-items:center; gap:6px; font-size:13px">
+            <input asp-for="IsFeatured" type="checkbox" />
+            <span>Destacado en home</span>
+        </label>
+        <label style="display:flex; align-items:center; gap:6px; font-size:13px">
+            <input asp-for="IsNew" type="checkbox" />
+            <span>Marcar como NUEVO</span>
+        </label>
+    </div>
+</div>

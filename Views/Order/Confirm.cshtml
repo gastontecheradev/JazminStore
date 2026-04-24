@@ -1,0 +1,47 @@
+@model Jazmin.Models.Order
+@{
+    ViewData["Title"] = "¡Gracias!";
+}
+
+<section class="section container-narrow" style="text-align:center">
+    <div style="font-size:60px; color:var(--pink-400); margin-bottom:10px">✓</div>
+    <div class="section-eyebrow">Pedido confirmado</div>
+    <h1 class="section-title">¡Gracias por tu compra!</h1>
+    <p class="section-sub">Recibimos tu pedido <strong>@Model.OrderNumber</strong>. Te enviamos un email a @Model.CustomerEmail.</p>
+
+    <div style="background:white; border:1px solid var(--border); border-radius:var(--r); padding:24px; margin:30px auto; max-width:520px; text-align:left">
+        <div style="display:flex; justify-content:space-between; padding:8px 0; font-size:14px">
+            <span>Total</span>
+            <span style="font-weight:600; color:var(--pink-700); font-size:18px">$ @Model.Total.ToString("N0")</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; padding:8px 0; font-size:14px; color:var(--text-muted)">
+            <span>Método de pago</span>
+            <span>
+                @switch (Model.PaymentMethod)
+                {
+                    case Jazmin.Models.PaymentMethod.MercadoPago: <text>Mercado Pago</text> break;
+                    case Jazmin.Models.PaymentMethod.CashOnDelivery: <text>Efectivo</text> break;
+                    case Jazmin.Models.PaymentMethod.BankTransfer: <text>Transferencia</text> break;
+                }
+            </span>
+        </div>
+    </div>
+
+    @if (Model.PaymentMethod == Jazmin.Models.PaymentMethod.BankTransfer)
+    {
+        <div class="alert alert-info" style="text-align:left; max-width:520px; margin:0 auto">
+            <strong>Transferencia bancaria:</strong> te vamos a enviar los datos de la cuenta por email/WhatsApp para que puedas concretar el pago.
+        </div>
+    }
+    else if (Model.PaymentMethod == Jazmin.Models.PaymentMethod.CashOnDelivery)
+    {
+        <div class="alert alert-info" style="text-align:left; max-width:520px; margin:0 auto">
+            <strong>Efectivo:</strong> nos contactaremos con vos para coordinar la entrega y el pago.
+        </div>
+    }
+
+    <div style="margin-top:26px">
+        <a asp-action="Detail" asp-route-id="@Model.Id" class="btn btn-primary">Ver detalle del pedido</a>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline">Volver al inicio</a>
+    </div>
+</section>

@@ -1,0 +1,74 @@
+@model ProfileViewModel
+@{
+    ViewData["Title"] = "Mi cuenta";
+}
+
+<div class="profile-wrap">
+    <aside class="profile-side">
+        <a asp-action="Profile" class="active">Mis datos</a>
+        <a asp-controller="Order" asp-action="Index">Mis pedidos</a>
+        <a asp-controller="Favorites" asp-action="Index">Favoritos</a>
+        <a asp-action="ChangePassword">Cambiar contraseña</a>
+        <form asp-action="Logout" method="post" style="margin-top:14px">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-ghost btn-sm btn-block" style="color:var(--danger)">Cerrar sesión</button>
+        </form>
+    </aside>
+
+    <div class="profile-main">
+        <h2>Mis datos</h2>
+
+        @if (TempData["ProfileMessage"] != null)
+        {
+            <div class="alert alert-success">@TempData["ProfileMessage"]</div>
+        }
+
+        <form asp-action="Profile" method="post">
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(excludePropertyErrors: true, message: null, htmlAttributes: new { @class = "validation-summary-errors" })
+
+            <div class="form-grid">
+                <div class="form-field">
+                    <label asp-for="FullName"></label>
+                    <input asp-for="FullName" />
+                    <span asp-validation-for="FullName" class="field-validation-error"></span>
+                </div>
+                <div class="form-field">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" readonly style="background:var(--pink-50)" />
+                </div>
+                <div class="form-field">
+                    <label asp-for="Phone"></label>
+                    <input asp-for="Phone" type="tel" />
+                </div>
+                <div class="form-field">
+                    <label asp-for="PostalCode"></label>
+                    <input asp-for="PostalCode" />
+                </div>
+                <div class="form-field" style="grid-column:1/-1">
+                    <label asp-for="Address"></label>
+                    <input asp-for="Address" />
+                </div>
+                <div class="form-field">
+                    <label asp-for="City"></label>
+                    <input asp-for="City" />
+                </div>
+                <div class="form-field">
+                    <label asp-for="Department"></label>
+                    @{
+                        var depts = new[] { "Montevideo","Canelones","Maldonado","Rocha","Treinta y Tres","Cerro Largo","Rivera","Artigas","Salto","Paysandú","Río Negro","Soriano","Colonia","San José","Flores","Florida","Durazno","Lavalleja","Tacuarembó" };
+                    }
+                    <select asp-for="Department">
+                        <option value="">— Seleccioná —</option>
+                        @foreach (var d in depts)
+                        {
+                            <option value="@d" selected="@(Model.Department == d)">@d</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top:20px">Guardar cambios</button>
+        </form>
+    </div>
+</div>

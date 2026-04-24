@@ -1,0 +1,55 @@
+@model List<Jazmin.Models.Category>
+@{
+    ViewData["Title"] = "Categorías";
+}
+
+<div class="admin-head">
+    <h1>Categorías</h1>
+    <a asp-action="Create" class="btn btn-primary">+ Nueva categoría</a>
+</div>
+
+<div class="adm-card" style="padding:0">
+    @if (!Model.Any())
+    {
+        <div style="padding:60px 20px; text-align:center; color:var(--text-muted)">
+            No hay categorías. <a asp-action="Create">Crear la primera</a>.
+        </div>
+    }
+    else
+    {
+        <table class="adm-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Slug</th>
+                    <th class="num">Productos</th>
+                    <th class="num">Orden</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model)
+                {
+                    <tr>
+                        <td style="font-family:var(--serif);font-size:16px;color:var(--pink-700)">@c.Name</td>
+                        <td style="font-size:12px;color:var(--text-muted)">@c.Slug</td>
+                        <td class="num">@c.Products.Count</td>
+                        <td class="num">@c.SortOrder</td>
+                        <td>
+                            @if (c.IsActive) { <span class="status status-Shipped">Activa</span> }
+                            else { <span class="status status-Cancelled">Oculta</span> }
+                        </td>
+                        <td class="actions">
+                            <a asp-action="Edit" asp-route-id="@c.Id" class="btn btn-ghost btn-sm">Editar</a>
+                            <form asp-action="Delete" asp-route-id="@c.Id" method="post" style="display:inline" onsubmit="return confirm('¿Borrar esta categoría?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-ghost btn-sm" style="color:var(--danger)">Borrar</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

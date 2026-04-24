@@ -1,0 +1,44 @@
+@model CategoryEditViewModel
+@{
+    ViewData["Title"] = "Nueva categoría";
+}
+
+<div class="admin-head">
+    <h1>Nueva categoría</h1>
+    <a asp-action="Index" class="btn btn-outline btn-sm">← Volver</a>
+</div>
+
+<form asp-action="Create" method="post" class="adm-card">
+    @Html.AntiForgeryToken()
+
+    <div class="adm-form">
+        @Html.ValidationSummary(excludePropertyErrors: true, message: null, htmlAttributes: new { @class = "validation-summary-errors" })
+
+        <div class="form-field">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" />
+            <span asp-validation-for="Name" class="field-validation-error"></span>
+        </div>
+        <div class="form-field">
+            <label asp-for="Description"></label>
+            <input asp-for="Description" />
+        </div>
+        <div class="row2">
+            <div class="form-field">
+                <label asp-for="SortOrder"></label>
+                <input asp-for="SortOrder" type="number" min="0" />
+            </div>
+            <div class="form-field">
+                <label style="display:flex; align-items:center; gap:6px; font-size:13px; margin-top:24px">
+                    <input asp-for="IsActive" type="checkbox" />
+                    <span>Activa</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top:20px; display:flex; gap:10px">
+        <button type="submit" class="btn btn-primary">Crear</button>
+        <a asp-action="Index" class="btn btn-ghost">Cancelar</a>
+    </div>
+</form>
