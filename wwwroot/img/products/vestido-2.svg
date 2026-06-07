@@ -1,10 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400">
-  <rect width="300" height="400" fill="#F7EFE8"/>
-  <g transform="translate(150 200)">
-    <ellipse cx="0" cy="-85" rx="42" ry="46" fill="#E8D5C4" opacity="0.55"/>
-    <path d="M -70 -30 Q -80 60 -60 150 L 60 150 Q 80 60 70 -30 Q 40 -40 0 -40 Q -40 -40 -70 -30 Z" fill="#E8D5C4" opacity="0.75"/>
-    <path d="M -70 -30 Q -110 20 -125 70 L -85 75 Q -75 35 -60 0 Z" fill="#E8D5C4" opacity="0.6"/>
-    <path d="M  70 -30 Q 110 20 125 70 L 85 75 Q 75 35 60 0 Z" fill="#E8D5C4" opacity="0.6"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800" role="img" aria-label="Vestido Lino">
+  <defs>
+    <radialGradient id="bgg" cx="50%" cy="38%" r="75%">
+      <stop offset="0%" stop-color="#f6f3ed"/>
+      <stop offset="100%" stop-color="#EFEAE0"/>
+    </radialGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="9"/>
+      <feOffset dy="14" result="o"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.18"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="600" height="800" fill="url(#bgg)"/>
+  <ellipse cx="300" cy="690" rx="150" ry="20" fill="#000" opacity="0.06"/>
+  <text x="300" y="70" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22"
+        letter-spacing="8" fill="#3a3330" opacity="0.55">JAZMÍN</text>
+  <g filter="url(#soft)">
+  <path d="M238 205 L268 175 Q300 198 332 175 L362 205 L350 250 L362 560
+           L238 560 L250 250 Z" fill="#D9C9A8"/>
+  <path d="M268 175 Q300 202 332 175 L320 208 Q300 222 280 208 Z" fill="#C8B68F"/>
+  <g stroke="#bfae8c" stroke-width="1.4" opacity="0.5">
+    <line x1="262" y1="300" x2="262" y2="555"/><line x1="300" y1="260" x2="300" y2="558"/>
+    <line x1="338" y1="300" x2="338" y2="555"/>
   </g>
-  <text x="150" y="370" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="14" fill="#9A6070">Vestido Lino</text>
+  <path d="M238 205 L250 250 M362 205 L350 250" stroke="#fff" stroke-width="2" opacity="0.3"/>
+</g>
+  <text x="300" y="745" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="26"
+        font-style="italic" fill="#3a3330">Vestido Lino</text>
 </svg>

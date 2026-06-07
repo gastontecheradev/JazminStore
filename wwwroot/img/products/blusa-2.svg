@@ -1,10 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400">
-  <rect width="300" height="400" fill="#FEF5F8"/>
-  <g transform="translate(150 200)">
-    <ellipse cx="0" cy="-85" rx="42" ry="46" fill="#FCE4EB" opacity="0.55"/>
-    <path d="M -70 -30 Q -80 60 -60 150 L 60 150 Q 80 60 70 -30 Q 40 -40 0 -40 Q -40 -40 -70 -30 Z" fill="#FCE4EB" opacity="0.75"/>
-    <path d="M -70 -30 Q -110 20 -125 70 L -85 75 Q -75 35 -60 0 Z" fill="#FCE4EB" opacity="0.6"/>
-    <path d="M  70 -30 Q 110 20 125 70 L 85 75 Q 75 35 60 0 Z" fill="#FCE4EB" opacity="0.6"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800" role="img" aria-label="Blusa Seda">
+  <defs>
+    <radialGradient id="bgg" cx="50%" cy="38%" r="75%">
+      <stop offset="0%" stop-color="#f6f1f0"/>
+      <stop offset="100%" stop-color="#F0E6E4"/>
+    </radialGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="9"/>
+      <feOffset dy="14" result="o"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.18"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="600" height="800" fill="url(#bgg)"/>
+  <ellipse cx="300" cy="690" rx="150" ry="20" fill="#000" opacity="0.06"/>
+  <text x="300" y="70" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22"
+        letter-spacing="8" fill="#3a3330" opacity="0.55">JAZMÍN</text>
+  <g filter="url(#soft)">
+  <path d="M225 215 L265 182 L300 208 L335 182 L375 215 L416 246 L394 300 L366 286
+           L366 472 L234 472 L234 286 L206 300 L184 246 Z" fill="#D8A7A0"/>
+  <path d="M225 215 L184 246 L206 300 L234 286 Z" fill="#C9938B"/>
+  <path d="M375 215 L416 246 L394 300 L366 286 Z" fill="#C9938B"/>
+  <path d="M300 208 L300 472" stroke="#C9938B" stroke-width="2"/>
+  <g fill="#bd8881">
+    <path d="M300 212 Q270 222 282 252 Q300 238 300 232 Q300 238 318 252 Q330 222 300 212 Z"/>
+    <path d="M300 232 L292 300 L308 300 Z" opacity="0.85"/>
   </g>
-  <text x="150" y="370" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="14" fill="#9A6070">Blusa Seda</text>
+</g>
+  <text x="300" y="745" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="26"
+        font-style="italic" fill="#3a3330">Blusa Seda</text>
 </svg>

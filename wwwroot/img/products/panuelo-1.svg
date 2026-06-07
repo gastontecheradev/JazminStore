@@ -1,10 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400">
-  <rect width="300" height="400" fill="#FEF0F3"/>
-  <g transform="translate(150 200)">
-    <ellipse cx="0" cy="-85" rx="42" ry="46" fill="#F2B8C6" opacity="0.55"/>
-    <path d="M -70 -30 Q -80 60 -60 150 L 60 150 Q 80 60 70 -30 Q 40 -40 0 -40 Q -40 -40 -70 -30 Z" fill="#F2B8C6" opacity="0.75"/>
-    <path d="M -70 -30 Q -110 20 -125 70 L -85 75 Q -75 35 -60 0 Z" fill="#F2B8C6" opacity="0.6"/>
-    <path d="M  70 -30 Q 110 20 125 70 L 85 75 Q 75 35 60 0 Z" fill="#F2B8C6" opacity="0.6"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="600" height="800" role="img" aria-label="Pañuelo Estampado">
+  <defs>
+    <radialGradient id="bgg" cx="50%" cy="38%" r="75%">
+      <stop offset="0%" stop-color="#f5f3f0"/>
+      <stop offset="100%" stop-color="#EDEAE4"/>
+    </radialGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="9"/>
+      <feOffset dy="14" result="o"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.18"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="600" height="800" fill="url(#bgg)"/>
+  <ellipse cx="300" cy="690" rx="150" ry="20" fill="#000" opacity="0.06"/>
+  <text x="300" y="70" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22"
+        letter-spacing="8" fill="#3a3330" opacity="0.55">JAZMÍN</text>
+  <g filter="url(#soft)">
+  <g transform="rotate(45 300 400)">
+    <rect x="190" y="290" width="220" height="220" rx="10" fill="#E7DFD2"/>
+    <rect x="190" y="290" width="220" height="220" rx="10" fill="none" stroke="#C9745A" stroke-width="6"/>
+    <rect x="206" y="306" width="188" height="188" rx="6" fill="none" stroke="#8FA37E" stroke-width="2" opacity="0.6"/>
+    <g fill="#C9745A" opacity="0.85">
+      <g transform="translate(248 348)"><circle r="9"/><circle cx="14" r="7"/><circle cx="-14" r="7"/><circle cy="14" r="7"/><circle cy="-14" r="7"/></g>
+      <g transform="translate(352 452)"><circle r="9"/><circle cx="14" r="7"/><circle cx="-14" r="7"/><circle cy="14" r="7"/><circle cy="-14" r="7"/></g>
+    </g>
+    <g fill="#8FA37E" opacity="0.8">
+      <g transform="translate(352 348)"><circle r="8"/><circle cx="12" r="6"/><circle cx="-12" r="6"/><circle cy="12" r="6"/><circle cy="-12" r="6"/></g>
+      <g transform="translate(248 452)"><circle r="8"/><circle cx="12" r="6"/><circle cx="-12" r="6"/><circle cy="12" r="6"/><circle cy="-12" r="6"/></g>
+    </g>
+    <circle cx="300" cy="400" r="6" fill="#C9745A"/>
   </g>
-  <text x="150" y="370" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="14" fill="#9A6070">Pañuelo</text>
+</g>
+  <text x="300" y="745" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="26"
+        font-style="italic" fill="#3a3330">Pañuelo Estampado</text>
 </svg>
